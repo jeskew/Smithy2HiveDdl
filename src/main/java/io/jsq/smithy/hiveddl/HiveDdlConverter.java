@@ -3,8 +3,6 @@ package io.jsq.smithy.hiveddl;
 import java.util.Map;
 import java.util.stream.Collectors;
 import software.amazon.smithy.model.Model;
-import software.amazon.smithy.model.shapes.BigDecimalShape;
-import software.amazon.smithy.model.shapes.BigIntegerShape;
 import software.amazon.smithy.model.shapes.BlobShape;
 import software.amazon.smithy.model.shapes.BooleanShape;
 import software.amazon.smithy.model.shapes.ByteShape;
