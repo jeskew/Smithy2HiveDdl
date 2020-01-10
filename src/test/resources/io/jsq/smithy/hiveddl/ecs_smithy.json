@@ -1,0 +1,3169 @@
+{
+  "smithy": "0.4.0",
+  "elastic.ecs": {
+    "shapes": {
+      "Agent": {
+        "type": "structure",
+        "members": {
+          "ephemeralId": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Ephemeral identifier of this agent (if one exists).\nThis id normally changes across restarts, but `agent.id` does not.",
+            "smithy.api#jsonName": "ephemeral_id",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "id": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Unique identifier of this agent (if one exists).\nExample: For Beats this would be beat.id."
+          },
+          "name": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Custom name of the agent.\nThis is a name that can be given to an agent. This can be helpful if for example two Filebeat instances are running on the same host but a human readable separation is needed on which Filebeat instance data is coming from.\nIf no name is given, the name is often left empty."
+          },
+          "type": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Type of the agent.\nThe agent type stays always the same and should be given by the agent used. In case of Filebeat the agent would always be Filebeat also if two Filebeat instances are run on the same machine."
+          },
+          "version": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Version of the agent."
+          }
+        },
+        "smithy.api#documentation": "The agent fields contain the data about the software entity, if any, that collects, detects, or observes events on a host, or takes measurements on a host.\nExamples include Beats. Agents may also run on observers. ECS agent.* fields shall be populated with details of the agent running on the host or observer where the event happened or the measurement was taken."
+      },
+      "AutonomousSystem": {
+        "type": "structure",
+        "members": {
+          "number": {
+            "target": "smithy.api#Long",
+            "smithy.api#documentation": "Unique number allocated to the autonomous system. The autonomous system number (ASN) uniquely identifies each network on the Internet.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "organization": {
+            "target": "AutonomousSystemOrganization"
+          }
+        },
+        "smithy.api#documentation": "An autonomous system (AS) is a collection of connected Internet Protocol (IP) routing prefixes under the control of one or more network operators on behalf of a single administrative entity or domain that presents a common, clearly defined routing policy to the internet."
+      },
+      "AutonomousSystemOrganization": {
+        "type": "structure",
+        "members": {
+          "name": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Organization name.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          }
+        }
+      },
+      "Client": {
+        "type": "structure",
+        "members": {
+          "address": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Some event client addresses are defined ambiguously. The event will sometimes list an IP, a domain or a unix socket.  You should always store the raw address in the `.address` field.\nThen it should be duplicated to `.ip` or `.domain`, depending on which one it is.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "as": {
+            "target": "AutonomousSystem"
+          },
+          "bytes": {
+            "target": "smithy.api#Long",
+            "smithy.api#documentation": "Bytes sent from the client to the server."
+          },
+          "domain": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Client domain."
+          },
+          "geo": {
+            "target": "Geo"
+          },
+          "ip": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "IP address of the client.\nCan be one or multiple IPv4 or IPv6 addresses."
+          },
+          "mac": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "MAC address of the client."
+          },
+          "nat": {
+            "target": "ClientNat"
+          },
+          "packets": {
+            "target": "smithy.api#Long",
+            "smithy.api#documentation": "Packets sent from the client to the server."
+          },
+          "port": {
+            "target": "smithy.api#Long",
+            "smithy.api#documentation": "Port of the client."
+          },
+          "registeredDomain": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "The highest registered client domain, stripped of the subdomain.\nFor example, the registered domain for \"foo.google.com\" is \"google.com\".\nThis value can be determined precisely with a list like the public suffix list (http://publicsuffix.org). Trying to approximate this by simply taking the last two labels will not work well for TLDs such as \"co.uk\".",
+            "smithy.api#jsonName": "registered_domain",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "topLevelDomain": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "The effective top level domain (eTLD), also known as the domain suffix, is the last part of the domain name. For example, the top level domain for google.com is \"com\".\nThis value can be determined precisely with a list like the public suffix list (http://publicsuffix.org). Trying to approximate this by simply taking the last label will not work well for effective TLDs such as \"co.uk\".",
+            "smithy.api#jsonName": "top_level_domain",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "user": {
+            "target": "User"
+          }
+        },
+        "smithy.api#documentation": "A client is defined as the initiator of a network connection for events regarding sessions, connections, or bidirectional flow records.\nFor TCP events, the client is the initiator of the TCP connection that sends the SYN packet(s). For other protocols, the client is generally the initiator or requestor in the network transaction. Some systems use the term \"originator\" to refer the client in TCP connections. The client fields describe details about the system acting as the client in the network event. Client fields are usually populated in conjunction with server fields. Client fields are generally not populated for packet-level events.\nClient / server representations can add semantic context to an exchange, which is helpful to visualize the data in certain situations. If your context falls in that category, you should still ensure that source and destination are filled appropriately."
+      },
+      "ClientNat": {
+        "type": "structure",
+        "members": {
+          "ip": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Translated IP of source based NAT sessions (e.g. internal client to internet).\nTypically connections traversing load balancers, firewalls, or routers.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "port": {
+            "target": "smithy.api#Long",
+            "smithy.api#documentation": "Translated port of source based NAT sessions (e.g. internal client to internet).\nTypically connections traversing load balancers, firewalls, or routers.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          }
+        }
+      },
+      "Cloud": {
+        "type": "structure",
+        "members": {
+          "account": {
+            "target": "CloudAccount"
+          },
+          "availabilityZone": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Availability zone in which this host is running.",
+            "smithy.api#jsonName": "availability_zone",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "instance": {
+            "target": "CloudInstance"
+          },
+          "machine": {
+            "target": "CloudMachine"
+          },
+          "provider": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Name of the cloud provider. Example values are aws, azure, gcp, or digitalocean.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "region": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Region in which this host is running.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          }
+        },
+        "smithy.api#documentation": "Fields related to the cloud or infrastructure the events are coming from."
+      },
+      "CloudAccount": {
+        "type": "structure",
+        "members": {
+          "id": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "The cloud account or organization id used to identify different entities in a multi-tenant environment.\nExamples: AWS account id, Google Cloud ORG Id, or other unique identifier.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          }
+        }
+      },
+      "CloudInstance": {
+        "type": "structure",
+        "members": {
+          "id": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Instance ID of the host machine.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "name": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Instance name of the host machine.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          }
+        }
+      },
+      "CloudMachine": {
+        "type": "structure",
+        "members": {
+          "type": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Machine type of the host machine.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          }
+        }
+      },
+      "Container": {
+        "type": "structure",
+        "members": {
+          "id": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Unique container id."
+          },
+          "image": {
+            "target": "ContainerImage"
+          },
+          "labels": {
+            "target": "ContainerLabels",
+            "smithy.api#documentation": "Image labels.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "name": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Container name.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "runtime": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Runtime managing this container.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          }
+        },
+        "smithy.api#documentation": "Container fields are used for meta information about the specific container that is the source of information.\nThese fields help correlate data based containers from any runtime."
+      },
+      "ContainerImage": {
+        "type": "structure",
+        "members": {
+          "name": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Name of the image the container was built on.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "tag": {
+            "target": "ContainerImageTagList",
+            "smithy.api#documentation": "Container image tag.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          }
+        }
+      },
+      "ContainerImageTagList": {
+        "type": "list",
+        "member": {
+          "target": "smithy.api#String"
+        }
+      },
+      "ContainerLabels": {
+        "type": "map",
+        "key": {
+          "target": "smithy.api#String"
+        },
+        "value": {
+          "target": "smithy.api#String"
+        }
+      },
+      "Destination": {
+        "type": "structure",
+        "members": {
+          "address": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Some event destination addresses are defined ambiguously. The event will sometimes list an IP, a domain or a unix socket.  You should always store the raw address in the `.address` field.\nThen it should be duplicated to `.ip` or `.domain`, depending on which one it is.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "as": {
+            "target": "AutonomousSystem"
+          },
+          "bytes": {
+            "target": "smithy.api#Long",
+            "smithy.api#documentation": "Bytes sent from the destination to the source."
+          },
+          "domain": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Destination domain."
+          },
+          "geo": {
+            "target": "Geo"
+          },
+          "ip": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "IP address of the destination.\nCan be one or multiple IPv4 or IPv6 addresses."
+          },
+          "mac": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "MAC address of the destination."
+          },
+          "nat": {
+            "target": "DestinationNat"
+          },
+          "packets": {
+            "target": "smithy.api#Long",
+            "smithy.api#documentation": "Packets sent from the destination to the source."
+          },
+          "port": {
+            "target": "smithy.api#Long",
+            "smithy.api#documentation": "Port of the destination."
+          },
+          "registeredDomain": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "The highest registered destination domain, stripped of the subdomain.\nFor example, the registered domain for \"foo.google.com\" is \"google.com\".\nThis value can be determined precisely with a list like the public suffix list (http://publicsuffix.org). Trying to approximate this by simply taking the last two labels will not work well for TLDs such as \"co.uk\".",
+            "smithy.api#jsonName": "registered_domain",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "topLevelDomain": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "The effective top level domain (eTLD), also known as the domain suffix, is the last part of the domain name. For example, the top level domain for google.com is \"com\".\nThis value can be determined precisely with a list like the public suffix list (http://publicsuffix.org). Trying to approximate this by simply taking the last label will not work well for effective TLDs such as \"co.uk\".",
+            "smithy.api#jsonName": "top_level_domain",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "user": {
+            "target": "User"
+          }
+        },
+        "smithy.api#documentation": "Destination fields describe details about the destination of a packet/event.\nDestination fields are usually populated in conjunction with source fields."
+      },
+      "DestinationNat": {
+        "type": "structure",
+        "members": {
+          "ip": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Translated ip of destination based NAT sessions (e.g. internet to private DMZ)\nTypically used with load balancers, firewalls, or routers.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "port": {
+            "target": "smithy.api#Long",
+            "smithy.api#documentation": "Port the source session is translated to by NAT Device.\nTypically used with load balancers, firewalls, or routers.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          }
+        }
+      },
+      "Dns": {
+        "type": "structure",
+        "members": {
+          "answers": {
+            "target": "DnsAnswersList",
+            "smithy.api#documentation": "An array containing an object for each answer section returned by the server.\nThe main keys that should be present in these objects are defined by ECS. Records that have more information may contain more keys than what ECS defines.\nNot all DNS data sources give all details about DNS answers. At minimum, answer objects must contain the `data` key. If more information is available, map as much of it to ECS as possible, and add any additional fields to the answer objects as custom fields.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "headerFlags": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Array of 2 letter DNS header flags.\nExpected values are: AA, TC, RD, RA, AD, CD, DO.",
+            "smithy.api#jsonName": "header_flags",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "id": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "The DNS packet identifier assigned by the program that generated the query. The identifier is copied to the response.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "opCode": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "The DNS operation code that specifies the kind of query in the message. This value is set by the originator of a query and copied into the response.",
+            "smithy.api#jsonName": "op_code",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "question": {
+            "target": "DnsQuestion"
+          },
+          "resolvedIp": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Array containing all IPs seen in `answers.data`.\nThe `answers` array can be difficult to use, because of the variety of data formats it can contain. Extracting all IP addresses seen in there to `dns.resolved_ip` makes it possible to index them as IP addresses, and makes them easier to visualize and query for.",
+            "smithy.api#jsonName": "resolved_ip",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "responseCode": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "The DNS response code.",
+            "smithy.api#jsonName": "response_code",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "type": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "The type of DNS event captured, query or answer.\nIf your source of DNS events only gives you DNS queries, you should only create dns events of type `dns.type:query`.\nIf your source of DNS events gives you answers as well, you should create one event per query (optionally as soon as the query is seen). And a second event containing all query details as well as an array of answers.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          }
+        },
+        "smithy.api#documentation": "Fields describing DNS queries and answers.\nDNS events should either represent a single DNS query prior to getting answers (`dns.type:query`) or they should represent a full exchange and contain the query details as well as all of the answers that were provided for this query (`dns.type:answer`)."
+      },
+      "DnsAnswers": {
+        "type": "structure",
+        "members": {
+          "class": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "The class of DNS data contained in this resource record.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "data": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "The data describing the resource.\nThe meaning of this data depends on the type and class of the resource record.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "name": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "The domain name to which this resource record pertains.\nIf a chain of CNAME is being resolved, each answer's `name` should be the one that corresponds with the answer's `data`. It should not simply be the original `question.name` repeated.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "ttl": {
+            "target": "smithy.api#Long",
+            "smithy.api#documentation": "The time interval in seconds that this resource record may be cached before it should be discarded. Zero values mean that the data should not be cached.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "type": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "The type of data contained in this resource record.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          }
+        }
+      },
+      "DnsAnswersList": {
+        "type": "list",
+        "member": {
+          "target": "DnsAnswers"
+        }
+      },
+      "DnsQuestion": {
+        "type": "structure",
+        "members": {
+          "class": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "The class of records being queried.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "name": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "The name being queried.\nIf the name field contains non-printable characters (below 32 or above 126), those characters should be represented as escaped base 10 integers (\\DDD). Back slashes and quotes should be escaped. Tabs, carriage returns, and line feeds should be converted to \\t, \\r, and \\n respectively.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "registeredDomain": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "The highest registered domain, stripped of the subdomain.\nFor example, the registered domain for \"foo.google.com\" is \"google.com\".\nThis value can be determined precisely with a list like the public suffix list (http://publicsuffix.org). Trying to approximate this by simply taking the last two labels will not work well for TLDs such as \"co.uk\".",
+            "smithy.api#jsonName": "registered_domain",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "subdomain": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "The subdomain is all of the labels under the registered_domain.\nIf the domain has multiple levels of subdomain, such as \"sub2.sub1.example.com\", the subdomain field should contain \"sub2.sub1\", with no trailing period.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "topLevelDomain": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "The effective top level domain (eTLD), also known as the domain suffix, is the last part of the domain name. For example, the top level domain for google.com is \"com\".\nThis value can be determined precisely with a list like the public suffix list (http://publicsuffix.org). Trying to approximate this by simply taking the last label will not work well for effective TLDs such as \"co.uk\".",
+            "smithy.api#jsonName": "top_level_domain",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "type": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "The type of record being queried.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          }
+        }
+      },
+      "Ecs": {
+        "type": "structure",
+        "members": {
+          "version": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "ECS version this event conforms to. `ecs.version` is a required field and must exist in all events.\nWhen querying across multiple indices -- which may conform to slightly different ECS versions -- this field lets integrations adjust to the schema version of the events.",
+            "smithy.api#required": true
+          }
+        },
+        "smithy.api#documentation": "Meta-information specific to ECS."
+      },
+      "Error": {
+        "type": "structure",
+        "members": {
+          "code": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Error code describing the error."
+          },
+          "id": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Unique identifier for the error."
+          },
+          "message": {
+            "target": "ErrorMessageList",
+            "smithy.api#documentation": "Error message."
+          },
+          "stackTrace": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "The stack trace of this error in plain text.",
+            "smithy.api#jsonName": "stack_trace",
+            "smithy.api#tags": [
+              "ecs:extended",
+              "ecs:unindexed"
+            ]
+          },
+          "type": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "The type of the error, for example the class name of the exception.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          }
+        },
+        "smithy.api#documentation": "These fields can represent errors of any kind.\nUse them for errors that happen while fetching events or in cases where the event itself contains an error."
+      },
+      "ErrorMessageList": {
+        "type": "list",
+        "member": {
+          "target": "smithy.api#String"
+        }
+      },
+      "Event": {
+        "type": "structure",
+        "members": {
+          "action": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "The action captured by the event.\nThis describes the information in the event. It is more specific than `event.category`. Examples are `group-add`, `process-started`, `file-created`. The value is normally defined by the implementer."
+          },
+          "category": {
+            "target": "EventCategoryList",
+            "smithy.api#documentation": "This is one of four ECS Categorization Fields, and indicates the second level in the ECS category hierarchy.\n`event.category` represents the \"big buckets\" of ECS categories. For example, filtering on `event.category:process` yields all events relating to process activity. This field is closely related to `event.type`, which is used as a subcategory.\nThis field is an array. This will allow proper categorization of some events that fall in multiple categories."
+          },
+          "code": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Identification code for this event, if one exists.\nSome event sources use event codes to identify messages unambiguously, regardless of message language or wording adjustments over time. An example of this is the Windows Event ID.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "created": {
+            "target": "smithy.api#Timestamp",
+            "smithy.api#documentation": "event.created contains the date/time when the event was first read by an agent, or by your pipeline.\nThis field is distinct from @timestamp in that @timestamp typically contain the time extracted from the original event.\nIn most situations, these two timestamps will be slightly different. The difference can be used to calculate the delay between your source generating an event, and the time when your agent first processed it. This can be used to monitor your agent's or pipeline's ability to keep up with your event source.\nIn case the two timestamps are identical, @timestamp should be used."
+          },
+          "dataset": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Name of the dataset.\nIf an event source publishes more than one type of log or events (e.g. access log, error log), the dataset is used to specify which one the event comes from.\nIt's recommended but not required to start the dataset name with the module name, followed by a dot, then the dataset name."
+          },
+          "duration": {
+            "target": "smithy.api#Long",
+            "smithy.api#documentation": "Duration of the event in nanoseconds.\nIf event.start and event.end are known this value should be the difference between the end and start time."
+          },
+          "end": {
+            "target": "smithy.api#Timestamp",
+            "smithy.api#documentation": "event.end contains the date when the event ended or when the activity was last observed.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "hash": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Hash (perhaps logstash fingerprint) of raw field to be able to demonstrate log integrity.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "id": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Unique ID to describe the event."
+          },
+          "ingested": {
+            "target": "smithy.api#Timestamp",
+            "smithy.api#documentation": "Timestamp when an event arrived in the central data store.\nThis is different from `@timestamp`, which is when the event originally occurred.  It's also different from `event.created`, which is meant to capture the first time an agent saw the event.\nIn normal conditions, assuming no tampering, the timestamps should chronologically look like this: `@timestamp` < `event.created` < `event.ingested`."
+          },
+          "kind": {
+            "target": "EventKind",
+            "smithy.api#documentation": "This is one of four ECS Categorization Fields, and indicates the highest level in the ECS category hierarchy.\n`event.kind` gives high-level information about what type of information the event contains, without being specific to the contents of the event. For example, values of this field distinguish alert events from metric events.\nThe value of this field can be used to inform how these kinds of events should be handled. They may warrant different retention, different access control, it may also help understand whether the data coming in at a regular interval or not."
+          },
+          "module": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Name of the module this data is coming from.\nIf your monitoring agent supports the concept of modules or plugins to process events of a given source (e.g. Apache logs), `event.module` should contain the name of this module."
+          },
+          "original": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Raw text message of entire event. Used to demonstrate log integrity.\nThis field is not indexed and doc_values are disabled. It cannot be searched, but it can be retrieved from `_source`.",
+            "smithy.api#tags": [
+              "ecs:unindexed"
+            ]
+          },
+          "outcome": {
+            "target": "EventOutcome",
+            "smithy.api#documentation": "This is one of four ECS Categorization Fields, and indicates the lowest level in the ECS category hierarchy.\n`event.outcome` simply denotes whether the event represent a success or a failure. Note that not all events will have an associated outcome. For example, this field is generally not populated for metric events or events with `event.type:info`."
+          },
+          "provider": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Source of the event.\nEvent transports such as Syslog or the Windows Event Log typically mention the source of an event. It can be the name of the software that generated the event (e.g. Sysmon, httpd), or of a subsystem of the operating system (kernel, Microsoft-Windows-Security-Auditing).",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "riskScore": {
+            "target": "smithy.api#Float",
+            "smithy.api#documentation": "Risk score or priority of the event (e.g. security solutions). Use your system's original value here.",
+            "smithy.api#jsonName": "risk_score"
+          },
+          "riskScoreNorm": {
+            "target": "smithy.api#Float",
+            "smithy.api#documentation": "Normalized risk score or priority of the event, on a scale of 0 to 100.\nThis is mainly useful if you use more than one system that assigns risk scores, and you want to see a normalized value across all systems.",
+            "smithy.api#jsonName": "risk_score_norm",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "sequence": {
+            "target": "smithy.api#Long",
+            "smithy.api#documentation": "Sequence number of the event.\nThe sequence number is a value published by some event sources, to make the exact ordering of events unambiguous, regarless of the timestamp precision.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "severity": {
+            "target": "smithy.api#Long",
+            "smithy.api#documentation": "The numeric severity of the event according to your event source.\nWhat the different severity values mean can be different between sources and use cases. It's up to the implementer to make sure severities are consistent across events from the same source.\nThe Syslog severity belongs in `log.syslog.severity.code`. `event.severity` is meant to represent the severity according to the event source (e.g. firewall, IDS). If the event source does not publish its own severity, you may optionally copy the `log.syslog.severity.code` to `event.severity`."
+          },
+          "start": {
+            "target": "smithy.api#Timestamp",
+            "smithy.api#documentation": "event.start contains the date when the event started or when the activity was first observed.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "timezone": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "This field should be populated when the event's timestamp does not include timezone information already (e.g. default Syslog timestamps). It's optional otherwise.\nAcceptable timezone formats are: a canonical ID (e.g. \"Europe/Amsterdam\"), abbreviated (e.g. \"EST\") or an HH:mm differential (e.g. \"-05:00\").",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "type": {
+            "target": "EventTypeList",
+            "smithy.api#documentation": "This is one of four ECS Categorization Fields, and indicates the third level in the ECS category hierarchy.\n`event.type` represents a categorization \"sub-bucket\" that, when used along with the `event.category` field values, enables filtering events down to a level appropriate for single visualization.\nThis field is an array. This will allow proper categorization of some events that fall in multiple event types."
+          }
+        },
+        "smithy.api#documentation": "The event fields are used for context information about the log or metric event itself.\nA log is defined as an event containing details of something that happened. Log events must include the time at which the thing happened. Examples of log events include a process starting on a host, a network packet being sent from a source to a destination, or a network connection between a client and a server being initiated or closed. A metric is defined as an event containing one or more numerical or categorical measurements and the time at which the measurement was taken. Examples of metric events include memory pressure measured on a host, or vulnerabilities measured on a scanned host."
+      },
+      "EventCategory": {
+        "type": "string",
+        "smithy.api#enum": {
+          "authentication": {
+            "name": "AUTHENTICATION",
+            "documentation": "Events in this category are related to the challenge and response process in which credentials are supplied and verified to allow the creation of a session. Common sources for these logs are Windows event logs and ssh logs. Visualize and analyze events in this category to look for failed logins, and other authentication-related activity."
+          },
+          "database": {
+            "name": "DATABASE",
+            "documentation": "The database category denotes events and metrics relating to a data storage and retrieval system. Note that use of this category is not limited to relational database systems. Examples include event logs from MS SQL, MySQL, Elasticsearch, MongoDB, etc. Use this category to visualize and analyze database activity such as accesses and changes."
+          },
+          "driver": {
+            "name": "DRIVER",
+            "documentation": "Events in the driver category have to do with operating system device drivers and similar software entities such as Windows drivers, kernel extensions, kernel modules, etc.\nUse events and metrics in this category to visualize and analyze driver-related activity and status on hosts."
+          },
+          "file": {
+            "name": "FILE",
+            "documentation": "Relating to a set of information that has been created on, or has existed on a filesystem. Use this category of events to visualize and analyze the creation, access, and deletions of files. Events in this category can come from both host-based and network-based sources. An example source of a network-based detection of a file transfer would be the Zeek file.log."
+          },
+          "host": {
+            "name": "HOST",
+            "documentation": "Use this category to visualize and analyze information such as host inventory or host lifecycle events.\nMost of the events in this category can usually be observed from the outside, such as from a hypervisor or a control plane's point of view. Some can also be seen from within, such as \"start\" or \"end\".\nNote that this category is for information about hosts themselves; it is not meant to capture activity \"happening on a host\"."
+          },
+          "intrusion_detection": {
+            "name": "INTRUSION_DETECTION",
+            "documentation": "Relating to intrusion detections from IDS/IPS systems and functions, both network and host-based. Use this category to visualize and analyze intrusion detection alerts from systems such as Snort, Suricata, and Palo Alto threat detections."
+          },
+          "malware": {
+            "name": "MALWARE",
+            "documentation": "Malware detection events and alerts. Use this category to visualize and analyze malware detections from EDR/EPP systems such as Elastic Endpoint Security, Symantec Endpoint Protection, Crowdstrike, and network IDS/IPS systems such as Suricata, or other sources of malware-related events such as Palo Alto Networks threat logs and Wildfire logs."
+          },
+          "package": {
+            "name": "PACKAGE",
+            "documentation": "Relating to software packages installed on hosts. Use this category to visualize and analyze inventory of software installed on various hosts, or to determine host vulnerability in the absence of vulnerability scan data."
+          },
+          "process": {
+            "name": "PROCESS",
+            "documentation": "Use this category of events to visualize and analyze process-specific information such as lifecycle events or process ancestry."
+          },
+          "web": {
+            "name": "WEB",
+            "documentation": "Relating to web server access. Use this category to create a dashboard of web server/proxy activity from apache, IIS, nginx web servers, etc. Note: events from network observers such as Zeek http log may also be included in this category."
+          }
+        }
+      },
+      "EventCategoryList": {
+        "type": "list",
+        "member": {
+          "target": "EventCategory"
+        }
+      },
+      "EventKind": {
+        "type": "string",
+        "smithy.api#enum": {
+          "alert": {
+            "name": "ALERT",
+            "documentation": "This value indicates an event that describes an alert or notable event, triggered by a detection rule.\n`event.kind:alert` is often populated for events coming from firewalls, intrusion detection systems, endpoint detection and response systems, and so on."
+          },
+          "event": {
+            "name": "EVENT",
+            "documentation": "This value is the most general and most common value for this field. It is used to represent events that indicate that something happened."
+          },
+          "metric": {
+            "name": "METRIC",
+            "documentation": "This value is used to indicate that this event that a numeric measurement was taken at given point in time.\nExamples include CPU utilization, memory usage, or a vulnerability scan result.\nMetric events are often collected on a predictable frequency, such as once every few seconds, or once a minute."
+          },
+          "state": {
+            "name": "STATE",
+            "documentation": "This value is similar to metric, except that the entity being measured does not provide a numeric metric value, but rather one of a fixed set of conditions or states. For example a periodic event reporting a \"fin_wait\" state of a TCP connection on a host might use `event.type:state`."
+          },
+          "pipeline_error": {
+            "name": "PIPELINE_ERROR",
+            "documentation": "This value indicates that an error occurred during the ingestion of this event, and that event data may be missing, inconsistent, or incorrect. `event.kind:pipeline_error` is often associated with parsing errors."
+          },
+          "signal": {
+            "name": "SIGNAL",
+            "documentation": "This value is used by the Elastic SIEM app to denote an Elasticsearch document that was created by a SIEM detection engine rule.\nA signal will typically trigger a notification that something meaningful happened and should be investigated.\nUsage of this value is reserved, and pipelines should not populate `event.kind` with the value \"signal\"."
+          }
+        }
+      },
+      "EventOutcome": {
+        "type": "string",
+        "smithy.api#enum": {
+          "failure": {
+            "name": "FAILURE",
+            "documentation": "Indicates that this event describes a failed result. A common example is `event.category:file AND event.type:access AND event.outcome:failure` to indicate that a file access was attempted, but was not successful."
+          },
+          "success": {
+            "name": "SUCCESS",
+            "documentation": "Indicates that this event describes a successful result.  A common example is `event.category:file AND event.type:create AND event.outcome:success` to indicate that a file was successfully created."
+          },
+          "unknown": {
+            "name": "UNKNOWN",
+            "documentation": "Indicates that this event describes only an attempt for which the result is unknown. For example, if the event contains information only about a request in an entity transaction that usually results in a response, populating `event.outcome:unknown` is appropriate."
+          }
+        }
+      },
+      "EventType": {
+        "type": "string",
+        "smithy.api#enum": {
+          "access": {
+            "name": "ACCESS",
+            "documentation": "The access event type is used for the subset of events within a category that indicate that something was accessed. Common examples include `event.category:database AND event.type:access`, or `event.category:file AND event.type:access`. Note for file access, both directory listings and file opens should be included in this subcategory. You can further distinguish access operations using the ECS `event.action` field."
+          },
+          "change": {
+            "name": "CHANGE",
+            "documentation": "The change event type is used for the subset of events within a category that indicate that something has changed. If semantics best describe an event as modified, then include them in this subcategory. Common examples include `event.category:process AND event.type:change`, and `event.category:file AND event.type:change`. You can further distinguish change operations using the ECS `event.action` field."
+          },
+          "creation": {
+            "name": "CREATION",
+            "documentation": "The \"creation\" event type is used for the subset of events within a category that indicate that something was created. A common example is `event.category:file AND event.type:creation`."
+          },
+          "deletion": {
+            "name": "DELETION",
+            "documentation": "The deletion event type is used for the subset of events within a category that indicate that something was deleted. A common example is `event.category:file AND event.type:deletion` to indicate that a file has been deleted."
+          },
+          "end": {
+            "name": "END",
+            "documentation": "The end event type is used for the subset of events within a category that indicate something has ended. A common example is `event.category:process AND event.type:end`."
+          },
+          "error": {
+            "name": "ERROR",
+            "documentation": "The error event type is used for the subset of events within a category that indicate or describe an error. A common example is `event.category:database AND event.type:error`. Note that pipeline errors that occur during the event ingestion process should not use this `event.type` value. Instead, they should use `event.kind:pipeline_error`."
+          },
+          "info": {
+            "name": "INFO",
+            "documentation": "The info event type is used for the subset of events within a category that indicate that they are purely informational, and don't report a state change, or any type of action. For example, an initial run of a file integrity monitoring system (FIM), where an agent reports all files under management, would fall into the \"info\" subcategory. Similarly, an event containing a dump of all currently running processes (as opposed to reporting that a process started/ended) would fall into the \"info\" subcategory. An additional common examples is `event.category:intrusion_detection AND event.type:info`."
+          },
+          "installation": {
+            "name": "INSTALLATION",
+            "documentation": "The installation event type is used for the subset of events within a category that indicate that something was installed. A common example is `event.category:package` AND `event.type:installation`."
+          },
+          "start": {
+            "name": "START",
+            "documentation": "The start event type is used for the subset of events within a category that indicate something has started. A common example is `event.category:process AND event.type:start`."
+          }
+        }
+      },
+      "EventTypeList": {
+        "type": "list",
+        "member": {
+          "target": "EventType"
+        }
+      },
+      "File": {
+        "type": "structure",
+        "members": {
+          "accessed": {
+            "target": "smithy.api#Timestamp",
+            "smithy.api#documentation": "Last time the file was accessed.\nNote that not all filesystems keep track of access time.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "attributes": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Array of file attributes.\nAttributes names will vary by platform. Here's a non-exhaustive list of values that are expected in this field: archive, compressed, directory, encrypted, execute, hidden, read, readonly, system, write.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "created": {
+            "target": "smithy.api#Timestamp",
+            "smithy.api#documentation": "File creation time.\nNote that not all filesystems store the creation time.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "ctime": {
+            "target": "smithy.api#Timestamp",
+            "smithy.api#documentation": "Last time the file attributes or metadata changed.\nNote that changes to the file content will update `mtime`. This implies `ctime` will be adjusted at the same time, since `mtime` is an attribute of the file.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "device": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Device that is the source of the file.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "directory": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Directory where the file is located. It should include the drive letter, when appropriate.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "driveLetter": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Drive letter where the file is located. This field is only relevant on Windows.\nThe value should be uppercase, and not include the colon.",
+            "smithy.api#jsonName": "drive_letter",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "extension": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "File extension.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "gid": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Primary group ID (GID) of the file.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "group": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Primary group name of the file.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "hash": {
+            "target": "Hash"
+          },
+          "inode": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Inode representing the file in the filesystem.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "mode": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Mode of the file in octal representation.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "mtime": {
+            "target": "smithy.api#Timestamp",
+            "smithy.api#documentation": "Last time the file content was modified.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "name": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Name of the file including the extension, without the directory.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "owner": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "File owner's username.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "path": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Full path to the file, including the file name. It should include the drive letter, when appropriate.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "size": {
+            "target": "smithy.api#Long",
+            "smithy.api#documentation": "File size in bytes.\nOnly relevant when `file.type` is \"file\".",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "targetPath": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Target path for symlinks.",
+            "smithy.api#jsonName": "target_path",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "type": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "File type (file, dir, or symlink).",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "uid": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "The user ID (UID) or security identifier (SID) of the file owner.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          }
+        },
+        "smithy.api#documentation": "A file is defined as a set of information that has been created on, or has existed on a filesystem.\nFile objects can be associated with host events, network events, and/or file events (e.g., those produced by File Integrity Monitoring [FIM] products or services). File fields provide details about the affected file associated with the event or metric."
+      },
+      "Geo": {
+        "type": "structure",
+        "members": {
+          "cityName": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "City name.",
+            "smithy.api#jsonName": "city_name"
+          },
+          "continentName": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Name of the continent.",
+            "smithy.api#jsonName": "continent_name"
+          },
+          "countryIsoCode": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Country ISO code.",
+            "smithy.api#jsonName": "country_iso_code"
+          },
+          "countryName": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Country name.",
+            "smithy.api#jsonName": "country_name"
+          },
+          "location": {
+            "target": "GeoLocation",
+            "smithy.api#documentation": "Longitude and latitude."
+          },
+          "name": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "User-defined description of a location, at the level of granularity they care about.\nCould be the name of their data centers, the floor number, if this describes a local physical entity, city names.\nNot typically used in automated geolocation.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "regionIsoCode": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Region ISO code.",
+            "smithy.api#jsonName": "region_iso_code"
+          },
+          "regionName": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Region name.",
+            "smithy.api#jsonName": "region_name"
+          }
+        },
+        "smithy.api#documentation": "Geo fields can carry data about a specific location related to an event.\nThis geolocation information can be derived from techniques such as Geo IP, or be user-supplied."
+      },
+      "GeoLocation": {
+        "type": "structure",
+        "members": {
+          "lat": {
+            "target": "smithy.api#Double"
+          },
+          "lon": {
+            "target": "smithy.api#Double"
+          }
+        }
+      },
+      "Group": {
+        "type": "structure",
+        "members": {
+          "domain": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Name of the directory the group is a member of.\nFor example, an LDAP or Active Directory domain name.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "id": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Unique identifier for the group on the system/platform.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "name": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Name of the group.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          }
+        },
+        "smithy.api#documentation": "The group fields are meant to represent groups that are relevant to the event."
+      },
+      "Hash": {
+        "type": "structure",
+        "members": {
+          "md5": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "MD5 hash.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "sha1": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "SHA1 hash.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "sha256": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "SHA256 hash.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "sha512": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "SHA512 hash.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          }
+        },
+        "smithy.api#documentation": "The hash fields represent different hash algorithms and their values.\nField names for common hashes (e.g. MD5, SHA1) are predefined. Add fields for other hashes by lowercasing the hash algorithm name and using underscore separators as appropriate (snake case, e.g. sha3_512)."
+      },
+      "Host": {
+        "type": "structure",
+        "members": {
+          "architecture": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Operating system architecture."
+          },
+          "domain": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Name of the domain of which the host is a member. \nFor example, on Windows this could be the host's Active Directory domain or NetBIOS domain name.  For Linux this could be the domain of the host's LDAP provider.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "geo": {
+            "target": "Geo"
+          },
+          "hostname": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Hostname of the host.\nIt normally contains what the `hostname` command returns on the host machine."
+          },
+          "id": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Unique host id.\nAs hostname is not always unique, use values that are meaningful in your environment.\nExample: The current usage of `beat.name`."
+          },
+          "ip": {
+            "target": "HostIpList",
+            "smithy.api#documentation": "Host ip address."
+          },
+          "mac": {
+            "target": "HostMacList",
+            "smithy.api#documentation": "Host mac address."
+          },
+          "name": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Name of the host.\nIt can contain what `hostname` returns on Unix systems, the fully qualified domain name, or a name specified by the user. The sender decides which value to use."
+          },
+          "os": {
+            "target": "OperatingSystem"
+          },
+          "type": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Type of host.\nFor Cloud providers this can be the machine type like `t2.medium`. If vm, this could be the container, for example, or other information meaningful in your environment."
+          },
+          "uptime": {
+            "target": "smithy.api#Long",
+            "smithy.api#documentation": "Seconds the host has been up.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "user": {
+            "target": "User"
+          }
+        },
+        "smithy.api#documentation": "A host is defined as a general computing instance.\nECS host.* fields should be populated with details about the host on which the event happened, or from which the measurement was taken. Host types include hardware, virtual machines, Docker containers, and Kubernetes nodes."
+      },
+      "HostIpList": {
+        "type": "list",
+        "member": {
+          "target": "smithy.api#String"
+        }
+      },
+      "HostMacList": {
+        "type": "list",
+        "member": {
+          "target": "smithy.api#String"
+        }
+      },
+      "Http": {
+        "type": "structure",
+        "members": {
+          "request": {
+            "target": "HttpRequest"
+          },
+          "response": {
+            "target": "HttpResponse"
+          },
+          "version": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "HTTP version.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          }
+        },
+        "smithy.api#documentation": "Fields related to HTTP activity. Use the `url` field set to store the url of the request."
+      },
+      "HttpRequest": {
+        "type": "structure",
+        "members": {
+          "body": {
+            "target": "HttpRequestBody"
+          },
+          "bytes": {
+            "target": "smithy.api#Long",
+            "smithy.api#documentation": "Total size in bytes of the request (body and headers).",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "method": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "HTTP request method.\nThe field value must be normalized to lowercase for querying. See the documentation section \"Implementing ECS\".",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "referrer": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Referrer for this HTTP request.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          }
+        }
+      },
+      "HttpRequestBody": {
+        "type": "structure",
+        "members": {
+          "bytes": {
+            "target": "smithy.api#Long",
+            "smithy.api#documentation": "Size in bytes of the request body.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "content": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "The full HTTP request body.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          }
+        }
+      },
+      "HttpResponse": {
+        "type": "structure",
+        "members": {
+          "body": {
+            "target": "HttpResponseBody"
+          },
+          "bytes": {
+            "target": "smithy.api#Long",
+            "smithy.api#documentation": "Total size in bytes of the response (body and headers).",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "statusCode": {
+            "target": "smithy.api#Long",
+            "smithy.api#documentation": "HTTP response status code.",
+            "smithy.api#jsonName": "status_code",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          }
+        }
+      },
+      "HttpResponseBody": {
+        "type": "structure",
+        "members": {
+          "bytes": {
+            "target": "smithy.api#Long",
+            "smithy.api#documentation": "Size in bytes of the response body.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "content": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "The full HTTP response body.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          }
+        }
+      },
+      "Log": {
+        "type": "structure",
+        "members": {
+          "level": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Original log level of the log event.\nIf the source of the event provides a log level or textual severity, this is the one that goes in `log.level`. If your source doesn't specify one, you may put your event transport's severity here (e.g. Syslog severity).\nSome examples are `warn`, `err`, `i`, `informational`."
+          },
+          "logger": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "The name of the logger inside an application. This is usually the name of the class which initialized the logger, or can be a custom name."
+          },
+          "origin": {
+            "target": "LogOrigin"
+          },
+          "original": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "This is the original log message and contains the full log message before splitting it up in multiple parts.\nIn contrast to the `message` field which can contain an extracted part of the log message, this field contains the original, full log message. It can have already some modifications applied like encoding or new lines removed to clean up the log message.\nThis field is not indexed and doc_values are disabled so it can't be queried but the value can be retrieved from `_source`.",
+            "smithy.api#tags": [
+              "ecs:unindexed"
+            ]
+          },
+          "syslog": {
+            "target": "LogSyslog",
+            "smithy.api#documentation": "The Syslog metadata of the event, if the event was transmitted via Syslog. Please see RFCs 5424 or 3164.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          }
+        },
+        "smithy.api#documentation": "Details about the event's logging mechanism or logging transport.\nThe log.* fields are typically populated with details about the logging mechanism used to create and/or transport the event. For example, syslog details belong under `log.syslog.*`.\nThe details specific to your event source are typically not logged under `log.*`, but rather in `event.*` or in other ECS fields."
+      },
+      "LogOrigin": {
+        "type": "structure",
+        "members": {
+          "file": {
+            "target": "LogOriginFile"
+          },
+          "function": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "The name of the function or method which originated the log event.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          }
+        }
+      },
+      "LogOriginFile": {
+        "type": "structure",
+        "members": {
+          "line": {
+            "target": "smithy.api#Integer",
+            "smithy.api#documentation": "The line number of the file containing the source code which originated the log event.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "name": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "The name of the file containing the source code which originated the log event. Note that this is not the name of the log file.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          }
+        }
+      },
+      "LogSyslog": {
+        "type": "structure",
+        "members": {
+          "facility": {
+            "target": "LogSyslogFacility"
+          },
+          "priority": {
+            "target": "smithy.api#Long",
+            "smithy.api#documentation": "Syslog numeric priority of the event, if available.\nAccording to RFCs 5424 and 3164, the priority is 8 * facility + severity. This number is therefore expected to contain a value between 0 and 191.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "severity": {
+            "target": "LogSyslogSeverity"
+          }
+        }
+      },
+      "LogSyslogFacility": {
+        "type": "structure",
+        "members": {
+          "code": {
+            "target": "smithy.api#Long",
+            "smithy.api#documentation": "The Syslog numeric facility of the log event, if available.\nAccording to RFCs 5424 and 3164, this value should be an integer between 0 and 23.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "name": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "The Syslog text-based facility of the log event, if available.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          }
+        }
+      },
+      "LogSyslogSeverity": {
+        "type": "structure",
+        "members": {
+          "code": {
+            "target": "smithy.api#Long",
+            "smithy.api#documentation": "The Syslog numeric severity of the log event, if available.\nIf the event source publishing via Syslog provides a different numeric severity value (e.g. firewall, IDS), your source's numeric severity should go to `event.severity`. If the event source does not specify a distinct severity, you can optionally copy the Syslog severity to `event.severity`.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "name": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "The Syslog numeric severity of the log event, if available.\nIf the event source publishing via Syslog provides a different severity value (e.g. firewall, IDS), your source's text severity should go to `log.level`. If the event source does not specify a distinct severity, you can optionally copy the Syslog severity to `log.level`.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          }
+        }
+      },
+      "Network": {
+        "type": "structure",
+        "members": {
+          "application": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "A name given to an application level protocol. This can be arbitrarily assigned for things like microservices, but also apply to things like skype, icq, facebook, twitter. This would be used in situations where the vendor or service can be decoded such as from the source/dest IP owners, ports, or wire format.\nThe field value must be normalized to lowercase for querying. See the documentation section \"Implementing ECS\".",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "bytes": {
+            "target": "smithy.api#Long",
+            "smithy.api#documentation": "Total bytes transferred in both directions.\nIf `source.bytes` and `destination.bytes` are known, `network.bytes` is their sum."
+          },
+          "communityId": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "A hash of source and destination IPs and ports, as well as the protocol used in a communication. This is a tool-agnostic standard to identify flows.\nLearn more at https://github.com/corelight/community-id-spec.",
+            "smithy.api#jsonName": "community_id",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "direction": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Direction of the network traffic.\nRecommended values are:\n  * inbound\n  * outbound\n  * internal\n  * external\n  * unknown\n\nWhen mapping events from a host-based monitoring context, populate this field from the host's point of view.\nWhen mapping events from a network or perimeter-based monitoring context, populate this field from the point of view of your network perimeter."
+          },
+          "forwardedIp": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Host IP address when the source IP address is the proxy.",
+            "smithy.api#jsonName": "forwarded_ip"
+          },
+          "ianaNumber": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "IANA Protocol Number (https://www.iana.org/assignments/protocol-numbers/protocol-numbers.xhtml). Standardized list of protocols. This aligns well with NetFlow and sFlow related logs which use the IANA Protocol Number.",
+            "smithy.api#jsonName": "iana_number",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "name": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Name given by operators to sections of their network.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "packets": {
+            "target": "smithy.api#Long",
+            "smithy.api#documentation": "Total packets transferred in both directions.\nIf `source.packets` and `destination.packets` are known, `network.packets` is their sum."
+          },
+          "protocol": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "L7 Network protocol name. ex. http, lumberjack, transport protocol.\nThe field value must be normalized to lowercase for querying. See the documentation section \"Implementing ECS\"."
+          },
+          "transport": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Same as network.iana_number, but instead using the Keyword name of the transport layer (udp, tcp, ipv6-icmp, etc.)\nThe field value must be normalized to lowercase for querying. See the documentation section \"Implementing ECS\"."
+          },
+          "type": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "In the OSI Model this would be the Network Layer. ipv4, ipv6, ipsec, pim, etc\nThe field value must be normalized to lowercase for querying. See the documentation section \"Implementing ECS\"."
+          }
+        },
+        "smithy.api#documentation": "The network is defined as the communication path over which a host or network event happens.\nThe network.* fields should be populated with details about the network activity associated with an event."
+      },
+      "Observer": {
+        "type": "structure",
+        "members": {
+          "geo": {
+            "target": "Geo"
+          },
+          "hostname": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Hostname of the observer."
+          },
+          "ip": {
+            "target": "ObserverIpList",
+            "smithy.api#documentation": "IP address of the observer."
+          },
+          "mac": {
+            "target": "ObserverMacList",
+            "smithy.api#documentation": "MAC address of the observer"
+          },
+          "name": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Custom name of the observer.\nThis is a name that can be given to an observer. This can be helpful for example if multiple firewalls of the same model are used in an organization.\nIf no custom name is needed, the field can be left empty.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "os": {
+            "target": "OperatingSystem"
+          },
+          "product": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "The product name of the observer.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "serialNumber": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Observer serial number.",
+            "smithy.api#jsonName": "serial_number",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "type": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "The type of the observer the data is coming from.\nThere is no predefined list of observer types. Some examples are `forwarder`, `firewall`, `ids`, `ips`, `proxy`, `poller`, `sensor`, `APM server`."
+          },
+          "vendor": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Vendor name of the observer."
+          },
+          "version": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Observer version."
+          }
+        },
+        "smithy.api#documentation": "An observer is defined as a special network, security, or application device used to detect, observe, or create network, security, or application-related events and metrics.\nThis could be a custom hardware appliance or a server that has been configured to run special network, security, or application software. Examples include firewalls, web proxies, intrusion detection/prevention systems, network monitoring sensors, web application firewalls, data loss prevention systems, and APM servers. The observer.* fields shall be populated with details of the system, if any, that detects, observes and/or creates a network, security, or application event or metric. Message queues and ETL components used in processing events or metrics are not considered observers in ECS."
+      },
+      "ObserverIpList": {
+        "type": "list",
+        "member": {
+          "target": "smithy.api#String"
+        }
+      },
+      "ObserverMacList": {
+        "type": "list",
+        "member": {
+          "target": "smithy.api#String"
+        }
+      },
+      "OperatingSystem": {
+        "type": "structure",
+        "members": {
+          "family": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "OS family (such as redhat, debian, freebsd, windows).",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "full": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Operating system name, including the version or code name.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "kernel": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Operating system kernel version as a raw string.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "name": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Operating system name, without the version.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "platform": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Operating system platform (such centos, ubuntu, windows).",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "version": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Operating system version as a raw string.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          }
+        },
+        "smithy.api#documentation": "The OS fields contain information about the operating system."
+      },
+      "Organization": {
+        "type": "structure",
+        "members": {
+          "id": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Unique identifier for the organization.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "name": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Organization name.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          }
+        },
+        "smithy.api#documentation": "The organization fields enrich data with information about the company or entity the data is associated with.\nThese fields help you arrange or filter data stored in an index by one or multiple organizations."
+      },
+      "Package": {
+        "type": "structure",
+        "members": {
+          "architecture": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Package architecture.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "buildVersion": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Additional information about the build version of the installed package.\nFor example use the commit SHA of a non-released package.",
+            "smithy.api#jsonName": "build_version",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "checksum": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Checksum of the installed package for verification.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "description": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Description of the package.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "installScope": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Indicating how the package was installed, e.g. user-local, global.",
+            "smithy.api#jsonName": "install_scope",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "installed": {
+            "target": "smithy.api#Timestamp",
+            "smithy.api#documentation": "Time when package was installed.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "license": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "License under which the package was released.\nUse a short name, e.g. the license identifier from SPDX License List where possible (https://spdx.org/licenses/).",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "name": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Package name",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "path": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Path where the package is installed.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "reference": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Home page or reference URL of the software in this package, if available.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "size": {
+            "target": "smithy.api#Long",
+            "smithy.api#documentation": "Package size in bytes.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "type": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Type of package.\nThis should contain the package file type, rather than the package manager name. Examples: rpm, dpkg, brew, npm, gem, nupkg, jar.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "version": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Package version",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          }
+        },
+        "smithy.api#documentation": "These fields contain information about an installed software package. It contains general information about a package, such as name, version or size. It also contains installation details, such as time or location."
+      },
+      "Process": {
+        "type": "structure",
+        "members": {
+          "args": {
+            "target": "ProcessArgsList",
+            "smithy.api#documentation": "Array of process arguments, starting with the absolute path to the executable.\nMay be filtered to protect sensitive information.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "argsCount": {
+            "target": "smithy.api#Long",
+            "smithy.api#documentation": "Length of the process.args array.\nThis field can be useful for querying or performing bucket analysis on how many arguments were provided to start a process. More arguments may be an indication of suspicious activity.",
+            "smithy.api#jsonName": "args_count",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "commandLine": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Full command line that started the process, including the absolute path to the executable, and all arguments.\nSome arguments may be filtered to protect sensitive information.",
+            "smithy.api#jsonName": "command_line",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "executable": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Absolute path to the process executable.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "exitCode": {
+            "target": "smithy.api#Long",
+            "smithy.api#documentation": "The exit code of the process, if this is a termination event.\nThe field should be absent if there is no exit code for the event (e.g. process start).",
+            "smithy.api#jsonName": "exit_code",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "hash": {
+            "target": "Hash"
+          },
+          "name": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Process name.\nSometimes called program name or similar.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "parent": {
+            "target": "ProcessParent"
+          },
+          "pgid": {
+            "target": "smithy.api#Long",
+            "smithy.api#documentation": "Identifier of the group of processes the process belongs to.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "pid": {
+            "target": "smithy.api#Long",
+            "smithy.api#documentation": "Process id."
+          },
+          "ppid": {
+            "target": "smithy.api#Long",
+            "smithy.api#documentation": "Parent process' pid.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "start": {
+            "target": "smithy.api#Timestamp",
+            "smithy.api#documentation": "The time the process started.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "thread": {
+            "target": "ProcessThread"
+          },
+          "title": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Process title.\nThe proctitle, some times the same as process name. Can also be different: for example a browser setting its title to the web page currently opened.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "uptime": {
+            "target": "smithy.api#Long",
+            "smithy.api#documentation": "Seconds the process has been up.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "workingDirectory": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "The working directory of the process.",
+            "smithy.api#jsonName": "working_directory",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          }
+        },
+        "smithy.api#documentation": "These fields contain information about a process.\nThese fields can help you correlate metrics information with a process id/name from a log message.  The `process.pid` often stays in the metric itself and is copied to the global field for correlation."
+      },
+      "ProcessArgsList": {
+        "type": "list",
+        "member": {
+          "target": "smithy.api#String"
+        }
+      },
+      "ProcessParent": {
+        "type": "structure",
+        "members": {
+          "args": {
+            "target": "ProcessParentArgsList",
+            "smithy.api#documentation": "Array of process arguments.\nMay be filtered to protect sensitive information.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "argsCount": {
+            "target": "smithy.api#Long",
+            "smithy.api#documentation": "Length of the process.args array.\nThis field can be useful for querying or performing bucket analysis on how many arguments were provided to start a process. More arguments may be an indication of suspicious activity.",
+            "smithy.api#jsonName": "args_count",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "commandLine": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Full command line that started the process, including the absolute path to the executable, and all arguments.\nSome arguments may be filtered to protect sensitive information.",
+            "smithy.api#jsonName": "command_line",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "executable": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Absolute path to the process executable.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "exitCode": {
+            "target": "smithy.api#Long",
+            "smithy.api#documentation": "The exit code of the process, if this is a termination event.\nThe field should be absent if there is no exit code for the event (e.g. process start).",
+            "smithy.api#jsonName": "exit_code",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "name": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Process name.\nSometimes called program name or similar.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "pgid": {
+            "target": "smithy.api#Long",
+            "smithy.api#documentation": "Identifier of the group of processes the process belongs to.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "pid": {
+            "target": "smithy.api#Long",
+            "smithy.api#documentation": "Process id."
+          },
+          "ppid": {
+            "target": "smithy.api#Long",
+            "smithy.api#documentation": "Parent process' pid.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "start": {
+            "target": "smithy.api#Timestamp",
+            "smithy.api#documentation": "The time the process started.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "thread": {
+            "target": "ProcessParentThread"
+          },
+          "title": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Process title.\nThe proctitle, some times the same as process name. Can also be different: for example a browser setting its title to the web page currently opened.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "uptime": {
+            "target": "smithy.api#Long",
+            "smithy.api#documentation": "Seconds the process has been up.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "workingDirectory": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "The working directory of the process.",
+            "smithy.api#jsonName": "working_directory",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          }
+        }
+      },
+      "ProcessParentArgsList": {
+        "type": "list",
+        "member": {
+          "target": "smithy.api#String"
+        }
+      },
+      "ProcessParentThread": {
+        "type": "structure",
+        "members": {
+          "id": {
+            "target": "smithy.api#Long",
+            "smithy.api#documentation": "Thread ID.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "name": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Thread name.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          }
+        }
+      },
+      "ProcessThread": {
+        "type": "structure",
+        "members": {
+          "id": {
+            "target": "smithy.api#Long",
+            "smithy.api#documentation": "Thread ID.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "name": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Thread name.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          }
+        }
+      },
+      "Record": {
+        "type": "structure",
+        "members": {
+          "agent": {
+            "target": "Agent"
+          },
+          "client": {
+            "target": "Client"
+          },
+          "cloud": {
+            "target": "Cloud"
+          },
+          "container": {
+            "target": "Container"
+          },
+          "destination": {
+            "target": "Destination"
+          },
+          "dns": {
+            "target": "Dns"
+          },
+          "ecs": {
+            "target": "Ecs"
+          },
+          "error": {
+            "target": "Error"
+          },
+          "event": {
+            "target": "Event"
+          },
+          "file": {
+            "target": "File"
+          },
+          "group": {
+            "target": "Group"
+          },
+          "host": {
+            "target": "Host"
+          },
+          "http": {
+            "target": "Http"
+          },
+          "labels": {
+            "target": "RecordLabels",
+            "smithy.api#documentation": "Custom key/value pairs.\nCan be used to add meta information to events. Should not contain nested objects. All values are stored as keyword.\nExample: `docker` and `k8s` labels."
+          },
+          "log": {
+            "target": "Log"
+          },
+          "message": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "For log events the message field contains the log message, optimized for viewing in a log viewer.\nFor structured logs without an original message field, other fields can be concatenated to form a human-readable summary of the event.\nIf multiple messages exist, they can be combined into one message."
+          },
+          "network": {
+            "target": "Network"
+          },
+          "observer": {
+            "target": "Observer"
+          },
+          "organization": {
+            "target": "Organization"
+          },
+          "package": {
+            "target": "Package"
+          },
+          "process": {
+            "target": "Process"
+          },
+          "registry": {
+            "target": "Registry"
+          },
+          "related": {
+            "target": "Related"
+          },
+          "rule": {
+            "target": "Rule"
+          },
+          "server": {
+            "target": "Server"
+          },
+          "service": {
+            "target": "Service"
+          },
+          "source": {
+            "target": "Source"
+          },
+          "tags": {
+            "target": "RecordTagsList",
+            "smithy.api#documentation": "List of keywords used to tag each event."
+          },
+          "threat": {
+            "target": "Threat"
+          },
+          "timestamp": {
+            "target": "smithy.api#Timestamp",
+            "smithy.api#documentation": "Date/time when the event originated.\nThis is the date/time extracted from the event, typically representing when the event was generated by the source.\nIf the event source has no original timestamp, this value is typically populated by the first time the event was received by the pipeline.\nRequired field for all events.",
+            "smithy.api#jsonName": "@timestamp",
+            "smithy.api#required": true
+          },
+          "tls": {
+            "target": "Tls"
+          },
+          "trace": {
+            "target": "RecordTrace"
+          },
+          "transaction": {
+            "target": "RecordTransaction"
+          },
+          "url": {
+            "target": "Url"
+          },
+          "user": {
+            "target": "User"
+          },
+          "user_agent": {
+            "target": "UserAgent"
+          },
+          "vulnerability": {
+            "target": "Vulnerability"
+          }
+        }
+      },
+      "RecordLabels": {
+        "type": "map",
+        "key": {
+          "target": "smithy.api#String"
+        },
+        "value": {
+          "target": "smithy.api#String"
+        }
+      },
+      "RecordTagsList": {
+        "type": "list",
+        "member": {
+          "target": "smithy.api#String"
+        }
+      },
+      "RecordTrace": {
+        "type": "structure",
+        "members": {
+          "id": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Unique identifier of the trace.\nA trace groups multiple events like transactions that belong together. For example, a user request handled by multiple inter-connected services.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          }
+        }
+      },
+      "RecordTransaction": {
+        "type": "structure",
+        "members": {
+          "id": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Unique identifier of the transaction.\nA transaction is the highest level of work measured within a service, such as a request to a server.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          }
+        }
+      },
+      "Registry": {
+        "type": "structure",
+        "members": {
+          "data": {
+            "target": "RegistryData"
+          },
+          "hive": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Abbreviated name for the hive."
+          },
+          "key": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Hive-relative path of keys."
+          },
+          "path": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Full path, including hive, key and value"
+          },
+          "value": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Name of the value written."
+          }
+        },
+        "smithy.api#documentation": "Fields related to Windows Registry operations."
+      },
+      "RegistryData": {
+        "type": "structure",
+        "members": {
+          "bytes": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Original bytes written with base64 encoding.\nFor Windows registry operations, such as SetValueEx and RegQueryValueEx, this corresponds to the data pointed by `lp_data`. This is optional but provides better recoverability and should be populated for REG_BINARY encoded values.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "strings": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Content when writing string types.\nPopulated as an array when writing string data to the registry. For single string registry types (REG_SZ, REG_EXPAND_SZ), this should be an array with one string. For sequences of string with REG_MULTI_SZ, this array will be variable length. For numeric data, such as REG_DWORD and REG_QWORD, this should be populated with the decimal representation (e.g `\"1\"`)."
+          },
+          "type": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Standard registry type for encoding contents"
+          }
+        }
+      },
+      "Related": {
+        "type": "structure",
+        "members": {
+          "ip": {
+            "target": "RelatedIpList",
+            "smithy.api#documentation": "All of the IPs seen on your event.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "user": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "All the user names seen on your event.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          }
+        },
+        "smithy.api#documentation": "This field set is meant to facilitate pivoting around a piece of data.\nSome pieces of information can be seen in many places in an ECS event. To facilitate searching for them, store an array of all seen values to their corresponding field in `related.`.\nA concrete example is IP addresses, which can be under host, observer, source, destination, client, server, and network.forwarded_ip. If you append all IPs to `related.ip`, you can then search for a given IP trivially, no matter where it appeared, by querying `related.ip:a.b.c.d`."
+      },
+      "RelatedIpList": {
+        "type": "list",
+        "member": {
+          "target": "smithy.api#String"
+        }
+      },
+      "Rule": {
+        "type": "structure",
+        "members": {
+          "category": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "A categorization value keyword used by the entity using the rule for detection of this event.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "description": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "The description of the rule generating the event.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "id": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "A rule ID that is unique within the scope of an agent, observer, or other entity using the rule for detection of this event.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "name": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "The name of the rule or signature generating the event.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "reference": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Reference URL to additional information about the rule used to generate this event.\nThe URL can point to the vendor's documentation about the rule. If that's not available, it can also be a link to a more general page describing this type of alert.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "ruleset": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Name of the ruleset, policy, group, or parent category in which the rule used to generate this event is a member.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "uuid": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "A rule ID that is unique within the scope of a set or group of agents, observers, or other entities using the rule for detection of this event.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "version": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "The version / revision of the rule being used for analysis.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          }
+        },
+        "smithy.api#documentation": "Rule fields are used to capture the specifics of any observer or agent rules that generate alerts or other notable events.\nExamples of data sources that would populate the rule fields include: network admission control platforms, network or  host IDS/IPS, network firewalls, web application firewalls, url filters, endpoint detection and response (EDR) systems, etc."
+      },
+      "Server": {
+        "type": "structure",
+        "members": {
+          "address": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Some event server addresses are defined ambiguously. The event will sometimes list an IP, a domain or a unix socket.  You should always store the raw address in the `.address` field.\nThen it should be duplicated to `.ip` or `.domain`, depending on which one it is.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "as": {
+            "target": "AutonomousSystem"
+          },
+          "bytes": {
+            "target": "smithy.api#Long",
+            "smithy.api#documentation": "Bytes sent from the server to the client."
+          },
+          "domain": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Server domain."
+          },
+          "geo": {
+            "target": "Geo"
+          },
+          "ip": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "IP address of the server.\nCan be one or multiple IPv4 or IPv6 addresses."
+          },
+          "mac": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "MAC address of the server."
+          },
+          "nat": {
+            "target": "ServerNat"
+          },
+          "packets": {
+            "target": "smithy.api#Long",
+            "smithy.api#documentation": "Packets sent from the server to the client."
+          },
+          "port": {
+            "target": "smithy.api#Long",
+            "smithy.api#documentation": "Port of the server."
+          },
+          "registeredDomain": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "The highest registered server domain, stripped of the subdomain.\nFor example, the registered domain for \"foo.google.com\" is \"google.com\".\nThis value can be determined precisely with a list like the public suffix list (http://publicsuffix.org). Trying to approximate this by simply taking the last two labels will not work well for TLDs such as \"co.uk\".",
+            "smithy.api#jsonName": "registered_domain",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "topLevelDomain": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "The effective top level domain (eTLD), also known as the domain suffix, is the last part of the domain name. For example, the top level domain for google.com is \"com\".\nThis value can be determined precisely with a list like the public suffix list (http://publicsuffix.org). Trying to approximate this by simply taking the last label will not work well for effective TLDs such as \"co.uk\".",
+            "smithy.api#jsonName": "top_level_domain",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "user": {
+            "target": "User"
+          }
+        },
+        "smithy.api#documentation": "A Server is defined as the responder in a network connection for events regarding sessions, connections, or bidirectional flow records.\nFor TCP events, the server is the receiver of the initial SYN packet(s) of the TCP connection. For other protocols, the server is generally the responder in the network transaction. Some systems actually use the term \"responder\" to refer the server in TCP connections. The server fields describe details about the system acting as the server in the network event. Server fields are usually populated in conjunction with client fields. Server fields are generally not populated for packet-level events.\nClient / server representations can add semantic context to an exchange, which is helpful to visualize the data in certain situations. If your context falls in that category, you should still ensure that source and destination are filled appropriately."
+      },
+      "ServerNat": {
+        "type": "structure",
+        "members": {
+          "ip": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Translated ip of destination based NAT sessions (e.g. internet to private DMZ)\nTypically used with load balancers, firewalls, or routers.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "port": {
+            "target": "smithy.api#Long",
+            "smithy.api#documentation": "Translated port of destination based NAT sessions (e.g. internet to private DMZ)\nTypically used with load balancers, firewalls, or routers.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          }
+        }
+      },
+      "Service": {
+        "type": "structure",
+        "members": {
+          "ephemeralId": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Ephemeral identifier of this service (if one exists).\nThis id normally changes across restarts, but `service.id` does not.",
+            "smithy.api#jsonName": "ephemeral_id",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "id": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Unique identifier of the running service. If the service is comprised of many nodes, the `service.id` should be the same for all nodes.\nThis id should uniquely identify the service. This makes it possible to correlate logs and metrics for one specific service, no matter which particular node emitted the event.\nNote that if you need to see the events from one specific host of the service, you should filter on that `host.name` or `host.id` instead."
+          },
+          "name": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Name of the service data is collected from.\nThe name of the service is normally user given. This allows for distributed services that run on multiple hosts to correlate the related instances based on the name.\nIn the case of Elasticsearch the `service.name` could contain the cluster name. For Beats the `service.name` is by default a copy of the `service.type` field if no name is specified."
+          },
+          "node": {
+            "target": "ServiceNode"
+          },
+          "state": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Current state of the service."
+          },
+          "type": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "The type of the service data is collected from.\nThe type can be used to group and correlate logs and metrics from one service type.\nExample: If logs or metrics are collected from Elasticsearch, `service.type` would be `elasticsearch`."
+          },
+          "version": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Version of the service the data was collected from.\nThis allows to look at a data set only for a specific version of a service."
+          }
+        },
+        "smithy.api#documentation": "The service fields describe the service for or from which the data was collected.\nThese fields help you find and correlate logs for a specific service and version."
+      },
+      "ServiceNode": {
+        "type": "structure",
+        "members": {
+          "name": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Name of a service node.\nThis allows for two nodes of the same service running on the same host to be differentiated. Therefore, `service.node.name` should typically be unique across nodes of a given service.\nIn the case of Elasticsearch, the `service.node.name` could contain the unique node name within the Elasticsearch cluster. In cases where the service doesn't have the concept of a node name, the host name or container name can be used to distinguish running instances that make up this service. If those do not provide uniqueness (e.g. multiple instances of the service running on the same host) - the node name can be manually set.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          }
+        }
+      },
+      "Source": {
+        "type": "structure",
+        "members": {
+          "address": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Some event source addresses are defined ambiguously. The event will sometimes list an IP, a domain or a unix socket.  You should always store the raw address in the `.address` field.\nThen it should be duplicated to `.ip` or `.domain`, depending on which one it is.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "as": {
+            "target": "AutonomousSystem"
+          },
+          "bytes": {
+            "target": "smithy.api#Long",
+            "smithy.api#documentation": "Bytes sent from the source to the destination."
+          },
+          "domain": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Source domain."
+          },
+          "geo": {
+            "target": "Geo"
+          },
+          "ip": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "IP address of the source.\nCan be one or multiple IPv4 or IPv6 addresses."
+          },
+          "mac": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "MAC address of the source."
+          },
+          "nat": {
+            "target": "SourceNat"
+          },
+          "packets": {
+            "target": "smithy.api#Long",
+            "smithy.api#documentation": "Packets sent from the source to the destination."
+          },
+          "port": {
+            "target": "smithy.api#Long",
+            "smithy.api#documentation": "Port of the source."
+          },
+          "registeredDomain": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "The highest registered source domain, stripped of the subdomain.\nFor example, the registered domain for \"foo.google.com\" is \"google.com\".\nThis value can be determined precisely with a list like the public suffix list (http://publicsuffix.org). Trying to approximate this by simply taking the last two labels will not work well for TLDs such as \"co.uk\".",
+            "smithy.api#jsonName": "registered_domain",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "topLevelDomain": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "The effective top level domain (eTLD), also known as the domain suffix, is the last part of the domain name. For example, the top level domain for google.com is \"com\".\nThis value can be determined precisely with a list like the public suffix list (http://publicsuffix.org). Trying to approximate this by simply taking the last label will not work well for effective TLDs such as \"co.uk\".",
+            "smithy.api#jsonName": "top_level_domain",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "user": {
+            "target": "User"
+          }
+        },
+        "smithy.api#documentation": "Source fields describe details about the source of a packet/event.\nSource fields are usually populated in conjunction with destination fields."
+      },
+      "SourceNat": {
+        "type": "structure",
+        "members": {
+          "ip": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Translated ip of source based NAT sessions (e.g. internal client to internet)\nTypically connections traversing load balancers, firewalls, or routers.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "port": {
+            "target": "smithy.api#Long",
+            "smithy.api#documentation": "Translated port of source based NAT sessions. (e.g. internal client to internet)\nTypically used with load balancers, firewalls, or routers.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          }
+        }
+      },
+      "Threat": {
+        "type": "structure",
+        "members": {
+          "framework": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Name of the threat framework used to further categorize and classify the tactic and technique of the reported threat. Framework classification can be provided by detecting systems, evaluated at ingest time, or retrospectively tagged to events.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "tactic": {
+            "target": "ThreatTactic"
+          },
+          "technique": {
+            "target": "ThreatTechnique"
+          }
+        },
+        "smithy.api#documentation": "Fields to classify events and alerts according to a threat taxonomy such as the Mitre ATT&CK framework.\nThese fields are for users to classify alerts from all of their sources (e.g. IDS, NGFW, etc.) within a common taxonomy. The threat.tactic.* are meant to capture the high level category of the threat (e.g. \"impact\"). The threat.technique.* fields are meant to capture which kind of approach is used by this detected threat, to accomplish the goal (e.g. \"endpoint denial of service\")."
+      },
+      "ThreatTactic": {
+        "type": "structure",
+        "members": {
+          "id": {
+            "target": "ThreatTacticIdList",
+            "smithy.api#documentation": "The id of tactic used by this threat. You can use the Mitre ATT&CK Matrix Tactic categorization, for example. (ex. https://attack.mitre.org/tactics/TA0040/ )",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "name": {
+            "target": "ThreatTacticNameList",
+            "smithy.api#documentation": "Name of the type of tactic used by this threat. You can use the Mitre ATT&CK Matrix Tactic categorization, for example. (ex. https://attack.mitre.org/tactics/TA0040/ )",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "reference": {
+            "target": "ThreatTacticReferenceList",
+            "smithy.api#documentation": "The reference url of tactic used by this threat. You can use the Mitre ATT&CK Matrix Tactic categorization, for example. (ex. https://attack.mitre.org/tactics/TA0040/ )",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          }
+        }
+      },
+      "ThreatTacticIdList": {
+        "type": "list",
+        "member": {
+          "target": "smithy.api#String"
+        }
+      },
+      "ThreatTacticNameList": {
+        "type": "list",
+        "member": {
+          "target": "smithy.api#String"
+        }
+      },
+      "ThreatTacticReferenceList": {
+        "type": "list",
+        "member": {
+          "target": "smithy.api#String"
+        }
+      },
+      "ThreatTechnique": {
+        "type": "structure",
+        "members": {
+          "id": {
+            "target": "ThreatTechniqueIdList",
+            "smithy.api#documentation": "The id of technique used by this tactic. You can use the Mitre ATT&CK Matrix Tactic categorization, for example. (ex. https://attack.mitre.org/techniques/T1499/ )",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "name": {
+            "target": "ThreatTechniqueNameList",
+            "smithy.api#documentation": "The name of technique used by this tactic. You can use the Mitre ATT&CK Matrix Tactic categorization, for example. (ex. https://attack.mitre.org/techniques/T1499/ )",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "reference": {
+            "target": "ThreatTechniqueReferenceList",
+            "smithy.api#documentation": "The reference url of technique used by this tactic. You can use the Mitre ATT&CK Matrix Tactic categorization, for example. (ex. https://attack.mitre.org/techniques/T1499/ )",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          }
+        }
+      },
+      "ThreatTechniqueIdList": {
+        "type": "list",
+        "member": {
+          "target": "smithy.api#String"
+        }
+      },
+      "ThreatTechniqueNameList": {
+        "type": "list",
+        "member": {
+          "target": "smithy.api#String"
+        }
+      },
+      "ThreatTechniqueReferenceList": {
+        "type": "list",
+        "member": {
+          "target": "smithy.api#String"
+        }
+      },
+      "Tls": {
+        "type": "structure",
+        "members": {
+          "cipher": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "String indicating the cipher used during the current connection.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "client": {
+            "target": "TlsClient"
+          },
+          "curve": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "String indicating the curve used for the given cipher, when applicable.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "established": {
+            "target": "smithy.api#Boolean",
+            "smithy.api#documentation": "Boolean flag indicating if the TLS negotiation was successful and transitioned to an encrypted tunnel.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "nextProtocol": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "String indicating the protocol being tunneled. Per the values in the IANA registry (https://www.iana.org/assignments/tls-extensiontype-values/tls-extensiontype-values.xhtml#alpn-protocol-ids), this string should be lower case.",
+            "smithy.api#jsonName": "next_protocol",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "resumed": {
+            "target": "smithy.api#Boolean",
+            "smithy.api#documentation": "Boolean flag indicating if this TLS connection was resumed from an existing TLS negotiation.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "server": {
+            "target": "TlsServer"
+          },
+          "version": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Numeric part of the version parsed from the original string.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "versionProtocol": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Normalized lowercase protocol name parsed from original string.",
+            "smithy.api#jsonName": "version_protocol",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          }
+        },
+        "smithy.api#documentation": "Fields related to a TLS connection. These fields focus on the TLS protocol itself and intentionally avoids in-depth analysis of the related x.509 certificate files."
+      },
+      "TlsClient": {
+        "type": "structure",
+        "members": {
+          "certificate": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "PEM-encoded stand-alone certificate offered by the client. This is usually mutually-exclusive of `client.certificate_chain` since this value also exists in that list.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "certificateChain": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Array of PEM-encoded certificates that make up the certificate chain offered by the client. This is usually mutually-exclusive of `client.certificate` since that value should be the first certificate in the chain.",
+            "smithy.api#jsonName": "certificate_chain",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "hash": {
+            "target": "TlsClientHash"
+          },
+          "issuer": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Distinguished name of subject of the issuer of the x.509 certificate presented by the client.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "ja3": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "A hash that identifies clients based on how they perform an SSL/TLS handshake.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "notAfter": {
+            "target": "smithy.api#Timestamp",
+            "smithy.api#documentation": "Date/Time indicating when client certificate is no longer considered valid.",
+            "smithy.api#jsonName": "not_after",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "notBefore": {
+            "target": "smithy.api#Timestamp",
+            "smithy.api#documentation": "Date/Time indicating when client certificate is first considered valid.",
+            "smithy.api#jsonName": "not_before",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "serverName": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Also called an SNI, this tells the server which hostname to which the client is attempting to connect. When this value is available, it should get copied to `destination.domain`.",
+            "smithy.api#jsonName": "server_name",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "subject": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Distinguished name of subject of the x.509 certificate presented by the client.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "supportedCiphers": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Array of ciphers offered by the client during the client hello.",
+            "smithy.api#jsonName": "supported_ciphers",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          }
+        }
+      },
+      "TlsClientHash": {
+        "type": "structure",
+        "members": {
+          "md5": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Certificate fingerprint using the MD5 digest of DER-encoded version of certificate offered by the client. For consistency with other hash values, this value should be formatted as an uppercase hash.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "sha1": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Certificate fingerprint using the SHA1 digest of DER-encoded version of certificate offered by the client. For consistency with other hash values, this value should be formatted as an uppercase hash.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "sha256": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Certificate fingerprint using the SHA256 digest of DER-encoded version of certificate offered by the client. For consistency with other hash values, this value should be formatted as an uppercase hash.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          }
+        }
+      },
+      "TlsServer": {
+        "type": "structure",
+        "members": {
+          "certificate": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "PEM-encoded stand-alone certificate offered by the server. This is usually mutually-exclusive of `server.certificate_chain` since this value also exists in that list.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "certificateChain": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Array of PEM-encoded certificates that make up the certificate chain offered by the server. This is usually mutually-exclusive of `server.certificate` since that value should be the first certificate in the chain.",
+            "smithy.api#jsonName": "certificate_chain",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "hash": {
+            "target": "TlsServerHash"
+          },
+          "issuer": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Subject of the issuer of the x.509 certificate presented by the server.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "ja3s": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "A hash that identifies servers based on how they perform an SSL/TLS handshake.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "notAfter": {
+            "target": "smithy.api#Timestamp",
+            "smithy.api#documentation": "Timestamp indicating when server certificate is no longer considered valid.",
+            "smithy.api#jsonName": "not_after",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "notBefore": {
+            "target": "smithy.api#Timestamp",
+            "smithy.api#documentation": "Timestamp indicating when server certificate is first considered valid.",
+            "smithy.api#jsonName": "not_before",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "subject": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Subject of the x.509 certificate presented by the server.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          }
+        }
+      },
+      "TlsServerHash": {
+        "type": "structure",
+        "members": {
+          "md5": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Certificate fingerprint using the MD5 digest of DER-encoded version of certificate offered by the server. For consistency with other hash values, this value should be formatted as an uppercase hash.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "sha1": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Certificate fingerprint using the SHA1 digest of DER-encoded version of certificate offered by the server. For consistency with other hash values, this value should be formatted as an uppercase hash.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "sha256": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Certificate fingerprint using the SHA256 digest of DER-encoded version of certificate offered by the server. For consistency with other hash values, this value should be formatted as an uppercase hash.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          }
+        }
+      },
+      "Url": {
+        "type": "structure",
+        "members": {
+          "domain": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Domain of the url, such as \"www.elastic.co\".\nIn some cases a URL may refer to an IP and/or port directly, without a domain name. In this case, the IP address would go to the `domain` field.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "extension": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "The field contains the file extension from the original request url.\nThe file extension is only set if it exists, as not every url has a file extension.\nThe leading period must not be included. For example, the value must be \"png\", not \".png\".",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "fragment": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Portion of the url after the `#`, such as \"top\".\nThe `#` is not part of the fragment.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "full": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "If full URLs are important to your use case, they should be stored in `url.full`, whether this field is reconstructed or present in the event source.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "original": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Unmodified original url as seen in the event source.\nNote that in network monitoring, the observed URL may be a full URL, whereas in access logs, the URL is often just represented as a path.\nThis field is meant to represent the URL as it was observed, complete or not.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "password": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Password of the request.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "path": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Path of the request, such as \"/search\".",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "port": {
+            "target": "smithy.api#Long",
+            "smithy.api#documentation": "Port of the request, such as 443.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "query": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "The query field describes the query string of the request, such as \"q=elasticsearch\".\nThe `?` is excluded from the query string. If a URL contains no `?`, there is no query field. If there is a `?` but no query, the query field exists with an empty string. The `exists` query can be used to differentiate between the two cases.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "registeredDomain": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "The highest registered url domain, stripped of the subdomain.\nFor example, the registered domain for \"foo.google.com\" is \"google.com\".\nThis value can be determined precisely with a list like the public suffix list (http://publicsuffix.org). Trying to approximate this by simply taking the last two labels will not work well for TLDs such as \"co.uk\".",
+            "smithy.api#jsonName": "registered_domain",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "scheme": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Scheme of the request, such as \"https\".\nNote: The `:` is not part of the scheme.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "topLevelDomain": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "The effective top level domain (eTLD), also known as the domain suffix, is the last part of the domain name. For example, the top level domain for google.com is \"com\".\nThis value can be determined precisely with a list like the public suffix list (http://publicsuffix.org). Trying to approximate this by simply taking the last label will not work well for effective TLDs such as \"co.uk\".",
+            "smithy.api#jsonName": "top_level_domain",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "username": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Username of the request.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          }
+        },
+        "smithy.api#documentation": "URL fields provide support for complete or partial URLs, and supports the breaking down into scheme, domain, path, and so on."
+      },
+      "User": {
+        "type": "structure",
+        "members": {
+          "domain": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Name of the directory the user is a member of.\nFor example, an LDAP or Active Directory domain name.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "email": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "User email address.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "fullName": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "User's full name, if available.",
+            "smithy.api#jsonName": "full_name",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "group": {
+            "target": "Group"
+          },
+          "hash": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Unique user hash to correlate information for a user in anonymized form.\nUseful if `user.id` or `user.name` contain confidential information and cannot be used.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "id": {
+            "target": "UserIdList",
+            "smithy.api#documentation": "One or multiple unique identifiers of the user."
+          },
+          "name": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Short name or login of the user."
+          }
+        },
+        "smithy.api#documentation": "The user fields describe information about the user that is relevant to the event.\nFields can have one entry or multiple entries. If a user has more than one id, provide an array that includes all of them."
+      },
+      "UserAgent": {
+        "type": "structure",
+        "members": {
+          "device": {
+            "target": "UserAgentDevice"
+          },
+          "name": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Name of the user agent.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "original": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Unparsed user_agent string.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "os": {
+            "target": "OperatingSystem"
+          },
+          "version": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Version of the user agent.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          }
+        },
+        "smithy.api#documentation": "The user_agent fields normally come from a browser request.\nThey often show up in web service logs coming from the parsed user agent string."
+      },
+      "UserAgentDevice": {
+        "type": "structure",
+        "members": {
+          "name": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "Name of the device.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          }
+        }
+      },
+      "UserIdList": {
+        "type": "list",
+        "member": {
+          "target": "smithy.api#String"
+        }
+      },
+      "Vulnerability": {
+        "type": "structure",
+        "members": {
+          "category": {
+            "target": "VulnerabilityCategoryList",
+            "smithy.api#documentation": "The type of system or architecture that the vulnerability affects. These may be platform-specific (for example, Debian or SUSE) or general (for example, Database or Firewall). For example (https://qualysguard.qualys.com/qwebhelp/fo_portal/knowledgebase/vulnerability_categories.htm[Qualys vulnerability categories])\nThis field must be an array.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "classification": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "The classification of the vulnerability scoring system. For example (https://www.first.org/cvss/)",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "description": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "The description of the vulnerability that provides additional context of the vulnerability. For example (https://cve.mitre.org/about/faqs.html#cve_entry_descriptions_created[Common Vulnerabilities and Exposure CVE description])",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "enumeration": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "The type of identifier used for this vulnerability. For example (https://cve.mitre.org/about/)",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "id": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "The identification (ID) is the number portion of a vulnerability entry. It includes a unique identification number for the vulnerability. For example (https://cve.mitre.org/about/faqs.html#what_is_cve_id)[Common Vulnerabilities and Exposure CVE ID]",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "reference": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "A resource that provides additional information, context, and mitigations for the identified vulnerability.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "reportId": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "The report or scan identification number.",
+            "smithy.api#jsonName": "report_id",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "scanner": {
+            "target": "VulnerabilityScanner"
+          },
+          "score": {
+            "target": "VulnerabilityScore"
+          },
+          "severity": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "The severity of the vulnerability can help with metrics and internal prioritization regarding remediation. For example (https://nvd.nist.gov/vuln-metrics/cvss)",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          }
+        },
+        "smithy.api#documentation": "The vulnerability fields describe information about a vulnerability that is relevant to an event."
+      },
+      "VulnerabilityCategoryList": {
+        "type": "list",
+        "member": {
+          "target": "smithy.api#String"
+        }
+      },
+      "VulnerabilityScanner": {
+        "type": "structure",
+        "members": {
+          "vendor": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "The name of the vulnerability scanner vendor.",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          }
+        }
+      },
+      "VulnerabilityScore": {
+        "type": "structure",
+        "members": {
+          "base": {
+            "target": "smithy.api#Float",
+            "smithy.api#documentation": "Scores can range from 0.0 to 10.0, with 10.0 being the most severe.\nBase scores cover an assessment for exploitability metrics (attack vector, complexity, privileges, and user interaction), impact metrics (confidentiality, integrity, and availability), and scope. For example (https://www.first.org/cvss/specification-document)",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "environmental": {
+            "target": "smithy.api#Float",
+            "smithy.api#documentation": "Scores can range from 0.0 to 10.0, with 10.0 being the most severe.\nEnvironmental scores cover an assessment for any modified Base metrics, confidentiality, integrity, and availability requirements. For example (https://www.first.org/cvss/specification-document)",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "temporal": {
+            "target": "smithy.api#Float",
+            "smithy.api#documentation": "Scores can range from 0.0 to 10.0, with 10.0 being the most severe.\nTemporal scores cover an assessment for code maturity, remediation level, and confidence. For example (https://www.first.org/cvss/specification-document)",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          },
+          "version": {
+            "target": "smithy.api#String",
+            "smithy.api#documentation": "The National Vulnerability Database (NVD) provides qualitative severity rankings of \"Low\", \"Medium\", and \"High\" for CVSS v2.0 base score ranges in addition to the severity ratings for CVSS v3.0 as they are defined in the CVSS v3.0 specification.\nCVSS is owned and managed by FIRST.Org, Inc. (FIRST), a US-based non-profit organization, whose mission is to help computer security incident response teams across the world. For example (https://nvd.nist.gov/vuln-metrics/cvss)",
+            "smithy.api#tags": [
+              "ecs:extended"
+            ]
+          }
+        }
+      }
+    }
+  }
+}
